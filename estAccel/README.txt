@@ -2,12 +2,12 @@
 A method to estimate optic acceleration from videos.
 
 ## Authors ########################################################
-Mengjian Hua &lt;<mh5113@nyu.edu>&gt and Charlie S. Burlingham &lt;<cs.burlingham@gmail.com>&gt
+Mengjian Hua &lt;<mh5113@nyu.edu>&gt; and Charlie S. Burlingham &lt;<cs.burlingham@gmail.com>&gt;
 
 ## Usage ##########################################################
 You must first compile MatlabPyrTools by running compilePyrTools.m in the subdirectory of MEX files called MatlabPyrTools. 
 
-Then input the video name/path and number of frames for which you want to compute optic acceleration beyond frame 1 of the video. Use at least 30 frames or so, as the flow estimator takes 11 consecutive frames by default, and the derivative filters require 5 consecutive flow fields.
+The main function is estAccel.m. To use it, input the video name/path and number of frames for which you want to compute optic acceleration beyond frame 1. Use at least 30 frames or so, as the flow estimator takes 11 consecutive frames by default, and the derivative filters require 5 consecutive flow fields. The code will return an estimate of the optic acceleration field.
 
 ## Citing #########################################################
 If you use estAccel (ffs), please reference the following:
