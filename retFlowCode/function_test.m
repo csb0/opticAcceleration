@@ -1,4 +1,28 @@
-%% functions test
+% Title:            function_test.m
+%
+% Authors:          Oliver Xu and Charlie Burlingham
+%
+% Purpose:          Uses various functions collected in this folder to
+%                   generate data, calculate singularities, and generate
+%                   figures
+%
+% Last updated:     April 27 2022
+%
+% License:          Copyright (C) 2022 Oliver Xu and Charlie Burlingham
+%
+%                   This program is free software: you can redistribute it and/or modify
+%                   it under the terms of the GNU Affero General Public License as
+%                   published by the Free Software Foundation, either version 3 of the
+%                   License, or (at your option) any later version.
+%
+%                   This program is distributed in the hope that it will be useful,
+%                   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%                   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%                   GNU Affero General Public License for more details.
+%
+%                   You should have received a copy of the GNU Affero General Public License
+%                   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
 %% set params
 save_path = 'C:\Users\Oli\Documents\charlie_data\kate_data\function_test\';
 save_path2 =  'C:\Users\Oli\Documents\charlie_data\kate_data\function_test\';
