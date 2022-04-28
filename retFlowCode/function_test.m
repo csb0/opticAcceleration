@@ -26,8 +26,8 @@
 %                   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 %
 %% set params
-save_path = 'C:\Users\Oli\Documents\charlie_data\kate_data\function_test\';
-save_path2 =  'C:\Users\Oli\Documents\charlie_data\kate_data\function_test2\';
+save_path = '/Users/Charlie/Desktop/fff/ff2';
+save_path2 =  '/Users/Charlie/Desktop/fff/ff3';
 heading = 30; % degrees
 fix_depth = 6000; % mm
 
