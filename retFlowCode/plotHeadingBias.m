@@ -31,10 +31,10 @@ function plotHeadingBias(foldername)
     cd(foldername);
     datafolders = dir('*0*');
     for ii = 1:length(datafolders)
-        folder = [foldername '\' datafolders(ii).name];
-        velfile = [folder '\vel_bias.mat'];
+        folder = [foldername '/' datafolders(ii).name];
+        velfile = [folder '/vel_bias.mat'];
         vel = load(velfile);
-        accelfile = [folder '\accel_bias.mat'];
+        accelfile = [folder '/accel_bias.mat'];
         accel = load(accelfile);
         heading = str2num(extractBefore(datafolders(ii).name, '-'));
         vel_pt = [vel_pt; [heading, median(vel.sing_bias)]];

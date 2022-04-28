@@ -33,12 +33,13 @@ function plotFigs(foldername, fix, heading) % inputs: directory, fixation depth
     cd(foldername);
     datafolders = dir('*0*');
     for ii = 1:length(datafolders)
-        folder = [foldername '\' datafolders(ii).name];
-        velfile = [folder '\vel_bias.mat'];
+        folder = [foldername '/' datafolders(ii).name];
+        velfile = [folder '/vel_bias.mat'];
         vel = load(velfile);
-        accelfile = [folder '\accel_bias.mat'];
+        accelfile = [folder '/accel_bias.mat'];
         accel = load(accelfile);
         displacement = fix/1000-str2num(datafolders(ii).name)/1000; % fixation depth minus plane depth
+        
         vel_pt = [vel_pt; [displacement, median(vel.sing_bias)]];
         accel_pt = [accel_pt; [displacement, median(accel.sing_bias)]];
     end
