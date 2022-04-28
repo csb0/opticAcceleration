@@ -4,7 +4,9 @@
 %
 % Purpose:          Uses various functions collected in this folder to
 %                   generate data, calculate singularities, and generate
-%                   figures
+%                   figures. Functions used here are based on code provided
+%                   by Matthis et. al, used in their paper "Retinal optic
+%                   flow during natural locomotion"
 %
 % Last updated:     April 27 2022
 %
@@ -52,4 +54,4 @@ save_vel_and_accel_biases(save_path2);
 %% display singularity, flow/accel data
 plotFigs(save_path, fix_depth, heading); % plots fig 6
 plotHeadingBias(save_path2); % plots fig 5
-plotFlowAccel([save_path '50-7500']); % example flow/accel field, can be adjusted
+plotFlowAccel([save_path2 '50-7500']); % example flow/accel field, can be adjusted

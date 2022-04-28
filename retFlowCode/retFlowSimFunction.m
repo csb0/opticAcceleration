@@ -268,7 +268,7 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
         gridRange = max(fixXYZ(:,1)+1e4)*10; %big ol bongo grid of dotto's
         planeSize = 8000*abs(-5e3-plane_depth)/0.5e3;
         % gapSize = 1000;
-        planeRes = planeSize/200; % keep resolution constant
+        planeRes = planeSize/400; % keep resolution constant
         % one plane
         yVec = (-1/2*planeSize):planeRes:(1/2*planeSize);
         zVec = (-1/2*planeSize)+eyeHeight:planeRes:(1/2*planeSize)+eyeHeight;
