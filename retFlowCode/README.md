@@ -1,5 +1,5 @@
 ## Authors ########################################################
-Oliver XU &lt;<yx1797@nyu.edu>&gt; and Charlie S. Burlingham &lt;<cs.burlingham@gmail.com>&gt;
+Oliver Xu &lt;<yx1797@nyu.edu>&gt; and Charlie S. Burlingham &lt;<cs.burlingham@gmail.com>&gt;
 
 ## Usage ##########################################################
 The main file used is function_test.m, which calls all of the requisite functions. Desired heading, fixation depth, and output directory can be adjusted through their respective variables. Fixation depth is given in terms of world coordinates, not displacement from observer. function_test.m generates figures corresponding to Figures 3-6 in the paper.
