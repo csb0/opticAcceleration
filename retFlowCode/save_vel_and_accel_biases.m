@@ -42,17 +42,12 @@ function save_vel_and_accel_biases(foldername)
 
             retGridVelxx(:,:,i) = thisEyeStruct.retGridVelxx;
             retGridVelyy(:,:,i) = thisEyeStruct.retGridVelyy;
-            mask1(:, :, i) = thisEyeStruct.mask1;
-            mask2(:, :, i) = thisEyeStruct.mask2;
-            mask3(:, :, i) = thisEyeStruct.mask3;
             dt = 1/thisEyeStruct.samplingRate;
             heading(1,i) = thisEyeStruct.headX;
             heading(2,i) = thisEyeStruct.headY;
-            transvel(:,i) =  thisEyeStruct.translation/dt;
         end
         retGridxx = thisEyeStruct.retGridxx;
         retGridyy = thisEyeStruct.retGridyy;
-        transaccel = [gradient(transvel(1,:))' gradient(transvel(2,:))' gradient(transvel(3,:))' ]/dt;
         % for i = 1:frame_ct
         %     angle(i) = acosd(transaccel(i,1)/norm(transaccel(i,:)));
         % end
@@ -108,11 +103,12 @@ function save_vel_and_accel_biases(foldername)
             sing_one(frame-2, :) = list_pos(1, idx(1));
             frame_two_idx = 2;
             while abs(list_pos(1, idx(1))-list_pos(1, idx(frame_two_idx))) < 10 % 10 degree tolerance for singularities
+            % while abs(idx(1)-idx(frame_two_idx)) < 10
                 frame_two_idx = frame_two_idx + 1;
             end
-            [idx(1), idx(frame_two_idx)]
+            [idx(1), idx(frame_two_idx)];
             sing_two(frame-2, :) = list_pos(1, idx(frame_two_idx));
-            if out(frame_two_idx) - out(1) > 0.5*out(1)
+            if out(frame_two_idx) - out(1) > 10*out(1) % was 0.5x
                 sing_two(frame-2, :) = NaN;
             end
             sing(frame-2, 1) = max(sing_one(frame-2, :), sing_two(frame-2, :));
@@ -168,11 +164,12 @@ function save_vel_and_accel_biases(foldername)
             sing_one(frame-2, :) = list_pos(1, idx(1));
             frame_two_idx = 2;
             while abs(list_pos(1, idx(1))-list_pos(1, idx(frame_two_idx))) < 10 % 10 degree tolerance for singularities
+            % while abs(idx(1)-idx(frame_two_idx)) < 10
                 frame_two_idx = frame_two_idx + 1;
             end
-            [idx(1), idx(frame_two_idx)]
+            [idx(1), idx(frame_two_idx)];
             sing_two(frame-2, :) = list_pos(1, idx(frame_two_idx));
-            if out(frame_two_idx) - out(1) > 0.5*out(1)
+            if out(frame_two_idx) - out(1) > 10*out(1) % was 0.5x
                 sing_two(frame-2, :) = NaN;
             end
             sing(frame-2, 1) = max(sing_one(frame-2, :), sing_two(frame-2, :));

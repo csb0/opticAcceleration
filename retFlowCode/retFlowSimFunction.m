@@ -199,35 +199,7 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
             eyeY = linspace(eyeStartPosition(2),eyeEndPosition(2),numFrames)';
             eyeZ = zeros(numFrames, 1) + eyeHeight;
             sec = numFrames/samplingRate;
-    %         headOscilAmp = 12;%mean(eyeZ)/10;
-    %         sinPath =  sin(linspace(0,pi*sec*5,numFrames))'*headOscilAmp; % If you know what I mean ;)
-    %         eyeY = sinPath*cosd(theta) + eyeY;
-    %         eyeX = eyeX - sinPath*sind(theta);
-    %         if sum(strcmp(trialType, {'SinX', 'SinY', 'SinZ', 'SinYCosZ'}))>0
-    %             sec = numFrames/samplingRate;
-    %             headOscilAmp = 12;% mean(eyeZ)/10;
-    %             sinPath =  sin(linspace(0,pi*sec*2,numFrames))'*headOscilAmp; % If you know what I mean ;)
-    %             DsinPath = gradient(sinPath);
-    %             cosPath =  cos(linspace(0,pi*sec*2,numFrames))'*headOscilAmp; % If you know what I mean ;)
-    %             DcosPath = gradient(cosPath);
-    %             switch trialType
-    %                 case 'SinX'
-    %                     eyeX = sinPath;
-    %                     DeyeY = gradient(eyeY);
-    %                     DeyeZ = gradient(eyeZ);
-    %                 case 'SinY'
-    %                     eyeY = sinPath;
-    %                     DeyeX = gradient(eyeX);
-    %                     DeyeZ = gradient(eyeZ);
-    %                 case 'SinZ'
-    %                     eyeZ = sinPath+eyeHeight;
-    %                     
-    %                 case 'SinYCosZ'
-    %                     eyeY = sinPath;
-    %                     eyeZ = cosPath+eyeHeight;
-    %                     
-    %             end
-    %         end
+
             eyeXYZ = [eyeX eyeY eyeZ];
             % these variables sit on a throne of LIES!!!
             shadow_fr_mar_dim = nan(numFrames, 30, 3);
@@ -244,21 +216,6 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
 
             fixXYZ = w.headVecX_fr_xyz+eyeXYZ;
         end
-        %% DEFINE GROUND PLANE (flat for now, but functionality for bumpy terrain exists in \ResearchProjects\FlowSimulationProject\3dFlowSimulation_old)
-
-    %     origin = [0 0 0];
-    %     groundPlane = createPlane(origin, [0 0 1], [0 1 0]);
-    %     
-    %     gridRes = 500;
-    %     gridRange = max(fixXYZ(:,1)+1e4); %big ol bongo grid of dotto's
-    %     xVec = -gridRange:gridRes:gridRange;
-    %     yVec = -gridRange:gridRes:gridRange;
-    %     [xx, yy] = meshgrid(xVec, yVec);
-    %     zz = zeros(size(xx));
-    %     
-    %     groundPoints_xyz_id = [xx(:), yy(:), zz(:), [1:length(xx(:))]' ];
-    %     
-    %     dotColors = lines(length(groundPoints_xyz_id(:,1)));    
          %% DEFINE GROUND PLANE (flat for now, but functionality for bumpy terrain exists in \ResearchProjects\FlowSimulationProject\3dFlowSimulation_old)
 
         origin = [0 0 0];
@@ -266,9 +223,11 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
         % groundPlane = createPlane([1.75e5 1 0], [1.75e5 0 1], [1.75e5 0 0]); % create plane at edge of point cloud 7.7.21
         gridRes = 200;
         gridRange = max(fixXYZ(:,1)+1e4)*10; %big ol bongo grid of dotto's
-        planeSize = 8000*abs(-5e3-plane_depth)/0.5e3;
+        % planeSize = 8000*abs(-5e3-plane_depth)/0.5e3;
+        planeSize = 88000*2; % test (original 8000/scaling^)
         % gapSize = 1000;
-        planeRes = planeSize/400; % keep resolution constant
+%         planeRes = planeSize/200; % keep resolution constant
+        planeRes = 100; % test
         % one plane
         yVec = (-1/2*planeSize):planeRes:(1/2*planeSize);
         zVec = (-1/2*planeSize)+eyeHeight:planeRes:(1/2*planeSize)+eyeHeight;
@@ -348,8 +307,12 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
         %     parfor fr  = startFrame:endFrame %parallel processing version (debug     and spotcheck bools don't work in this mode
         for fr  = startFrame:endFrame %single threaded version
             if mod(fr,10)==0; disp(['Loop #1 - ', num2str(fr), ' of ', num2str(endFrame)]); end %turn this off when parallel processing
-
-
+            
+            %% new stuff (experimental?)
+            if fr > startFrame % after fr loops past the first frame, store the previous frame's data as a separate var
+                prevEyeStruct = thisEyeStruct;
+            end
+            newEyeStruct = [];
             thisEyeStruct = baseEyeStruct; %create a new eyeStruct for this frame
             thisEyeStruct.baseEyeStruct = thisEyeStruct;
 
@@ -484,152 +447,41 @@ function retFlowSimFunction(heading_ang, depth, fix_depth, save_dir)
     %         thisEyeStruct.retinaProjPoints_fr_theta_rho_id = retinaProjPoints_fr_theta_rho_id;
             thisEyeStruct.retinaProjPoints_fr_X_Y_id = retinaProjPoints_fr_X_Y_id;
             % store fixation
-            thisEyeStruct.headX = headX;
-            thisEyeStruct.headY = headY;
-            % create mask
-            box1 = retinaProjPoints_fr_X_Y_id(1:size(retinaProjPoints_fr_X_Y_id, 1)/3, :);
-            box2 = retinaProjPoints_fr_X_Y_id(size(retinaProjPoints_fr_X_Y_id, 1)/3+1:2*size(retinaProjPoints_fr_X_Y_id, 1)/3, :);
-            box3 = retinaProjPoints_fr_X_Y_id(2*size(retinaProjPoints_fr_X_Y_id, 1)/3+1:3*size(retinaProjPoints_fr_X_Y_id, 1)/3, :);
-            mask1 = [min(box1(:, 1)), max(box1(:, 1)), min(box1(:, 2)), max(box1(:, 2))];
-            mask2 = [min(box2(:, 1)), max(box2(:, 1)), min(box2(:, 2)), max(box2(:, 2))];
-            mask3 = [min(box3(:, 1)), max(box3(:, 1)), min(box3(:, 2)), max(box3(:, 2))];
-            thisEyeStruct.mask1 = mask1;
-            thisEyeStruct.mask2 = mask2;
-            thisEyeStruct.mask3 = mask3;
+            newEyeStruct.headX = headX;
+            newEyeStruct.headY = headY;
+            
+            %% more new stuff
+            if fr > startFrame
+                [retinaProjVel_fr_xVel_yVel_id] = calcFlowPerFrame(thisEyeStruct, prevEyeStruct, fr, debug, spotcheck); %gets vel in X Y units...
+            else
+                [retinaProjVel_fr_xVel_yVel_id] = calcFlowPerFrame(thisEyeStruct, thisEyeStruct, fr, debug, spotcheck); %gets vel in X Y units...
+            end
+            
+            thisEyeStruct.retinaProjVel_fr_xVel_yVel_id = retinaProjVel_fr_xVel_yVel_id;
+
+            %% Calculate retinal vector field
+            retGridRes = 200; %larger numbers = more grid points = higher resolution
+            if mod(retGridRes,2)==0; retGridRes = retGridRes+1;end %make sure the res# odd to make sure the middle value passes through zero
+
+%             gridRadius =  (2*pi*thisEyeStruct.eyeRadius)/4;
+            % if things are in degrees
+            gridRadius = fovRadiusDeg;
+            newEyeStruct.samplingRate = samplingRate;
+            newEyeStruct.gridRadius = gridRadius;
+
+            [retGridxx, retGridyy, retGridVelxx, retGridVelyy, retGridIDs] = calcRetinalVectorField(thisEyeStruct, retGridRes, gridRadius, fr, debug, spotcheck);
+
+            newEyeStruct.retGridxx = retGridxx;
+            newEyeStruct.retGridyy = retGridyy;
+
+            newEyeStruct.retGridVelxx = retGridVelxx;
+            newEyeStruct.retGridVelyy = retGridVelyy;
+
+            newEyeStruct.retGridIDs = retGridIDs;
+            
             %% Save this eyestruct out to a file, which will be loaded later to determine flow per frame
             savePathFile = [savePath filesep 'eyeStructFrame' sprintf('%09d',fr) '.mat'];
-            parsave(savePathFile, thisEyeStruct)
-
-    %         parforprogressbar1.increment();
-
-        end
-
-        t = toc;
-        disp([ num2str(t) ' seconds elapsed. ' num2str(t/(endFrame-startFrame)) ' seconds per frame'])
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%% Step#3 (LOOP #2)  - Calculate Flow per frame
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        disp('Starting second for-loop')
-    %     parforprogressbar2 = ParforProgressbar(numFrames, 'showWorkerProgress', true, 'title', 'Second Parfor Progress') ;
-
-        tic
-        clear thisEyeStruct
-        for iteriter = [0 1]
-            frameList = startFrame+iteriter:2:endFrame;
-            % parfor loopfr  = 1:length(frameList) %parellel processing
-            for loopfr  = 1:length(frameList) %parellel processing
-                if mod(loopfr,10)==0; disp(['Loop #2 - ', num2str(loopfr), ' of ', num2str(endFrame)]); end %turn this off when parallel processing
-
-                fr = frameList(loopfr);            
-
-                if fr == startFrame
-                    prevEyeStruct =     load([savePath filesep 'eyeStructFrame' sprintf('%09d',fr) '.mat'], 'thisEyeStruct'); % on the first time, thisEyeStruct = prevEyeStruct (which will result in all flow being zero)
-                else
-                    prevEyeStruct =   load([savePath filesep 'eyeStructFrame' sprintf('%09d',fr-1) '.mat'], 'thisEyeStruct');
-                end
-
-                prevEyeStruct = prevEyeStruct.thisEyeStruct;
-
-                thisEyeStruct =     load([savePath filesep 'eyeStructFrame' sprintf('%09d',fr) '.mat'], 'thisEyeStruct');
-                thisEyeStruct =     thisEyeStruct.thisEyeStruct;
-
-                %% calculate flow per frame
-                %%%% compare each dot with it's location on the prev frame to calculate
-                %%%% delta_theta delta_rho (dth, dr)
-
-                [retinaProjVel_fr_xVel_yVel_id] = calcFlowPerFrame(thisEyeStruct, prevEyeStruct, fr, debug, spotcheck); %gets vel in X Y units...
-
-                thisEyeStruct.retinaProjVel_fr_xVel_yVel_id = retinaProjVel_fr_xVel_yVel_id;
-
-                %% Calculate retinal vector field
-                retGridRes = 200; %larger numbers = more grid points = higher resolution
-                if mod(retGridRes,2)==0; retGridRes = retGridRes+1;end %make sure the res# odd to make sure the middle value passes through zero
-
-    %             gridRadius =  (2*pi*thisEyeStruct.eyeRadius)/4;
-                % if things are in degrees
-                gridRadius = fovRadiusDeg;
-                thisEyeStruct.gridRadius = gridRadius;
-
-                [retGridxx, retGridyy, retGridVelxx, retGridVelyy, retGridIDs] = calcRetinalVectorField(thisEyeStruct, retGridRes, gridRadius, fr, debug, spotcheck);
-    %             % filter with mask
-    %             for ii = 1:size(retGridVelxx(:, 1), 1)
-    %                 for jj = 1:size(retGridVelxx(1, :),2)
-    %                     % check if not within mask1
-    %                     if ~(retGridxx(ii, jj) >= mask1(1) && retGridxx(ii, jj) <= mask1(2) && retGridyy(ii, jj) >= mask1(3) && retGridyy(ii, jj) <=mask1(4))
-    %                         % not in mask1, check mask2
-    %                         if ~(retGridxx(ii, jj) >= mask2(1) && retGridxx(ii, jj) <= mask2(2) && retGridyy(ii, jj) >= mask2(3) && retGridyy(ii, jj) <=mask2(4))
-    %                             % not in mask2 either, check mask3
-    %                             if ~(retGridxx(ii, jj) >= mask3(1) && retGridxx(ii, jj) <= mask3(2) && retGridyy(ii, jj) >= mask3(3) && retGridyy(ii, jj) <=mask3(4))
-    %                                 % not in any of the three masks, set retGridVelxx and retGridVelyy value at i,j to NaN
-    %                                 retGridVelxx(ii, jj) = NaN;
-    %                                 retGridVelyy(ii, jj) = NaN;
-    %                             end
-    %                         end
-    %                     end
-    %                 end
-    %             end
-
-                thisEyeStruct.retGridxx = retGridxx;
-                thisEyeStruct.retGridyy = retGridyy;
-
-                thisEyeStruct.retGridVelxx = retGridVelxx;
-                thisEyeStruct.retGridVelyy = retGridVelyy;
-
-                thisEyeStruct.retGridIDs = retGridIDs;
-
-                %% here's the part where I pretend that I understand vector calculus
-
-                %curl
-                [curlz, cav] = curl(...
-                    thisEyeStruct.retGridxx,...
-                    thisEyeStruct.retGridyy,...
-                    thisEyeStruct.retGridVelxx,...
-                    thisEyeStruct.retGridVelyy);
-                %divergence
-                [div] = divergence(...
-                    thisEyeStruct.retGridxx,...
-                    thisEyeStruct.retGridyy,...
-                    thisEyeStruct.retGridVelxx,...
-                    thisEyeStruct.retGridVelyy);
-
-
-                thisEyeStruct.curlFr = curlz;
-                thisEyeStruct.cavFr = cav;
-                thisEyeStruct.divFr = div;
-
-                %% find Focus of expansion
-
-                downResFactor = 5; %how much to down res the RetGrid dots for the FOE finder. Higher numbers = fewer streamlines
-
-                if fr==startFrame %fake it til you make it, lol
-                    thisEyeStruct.FOExy = [nan nan];
-                    thisEyeStruct.streamXY = {};
-                    thisEyeStruct.maxKDE = nan;
-                else
-                    [FOExy, streamXY] = findFOE_sim(...
-                        thisEyeStruct.retGridxx,...
-                        thisEyeStruct.retGridyy,...
-                        thisEyeStruct.retGridVelxx,...
-                        thisEyeStruct.retGridVelyy,...
-                        downResFactor,...
-                        debug, spotcheck);
-
-                    thisEyeStruct.FOExy  = FOExy;
-                    thisEyeStruct.streamXY = streamXY;
-                end
-
-
-
-                %% RE-Save this eyestruct out to a file, which now contains flow-per-frame data <3
-                savePathFile = [savePath filesep 'eyeStructFrame' sprintf('%09d',fr) '.mat'];
-                % parsave(savePathFile, thisEyeStruct)
-                save(savePathFile, 'thisEyeStruct', '-v7.3')
-
-    %             parforprogressbar2.increment();
-
-            end
+            parsave(savePathFile, newEyeStruct)
         end
 
         t = toc;

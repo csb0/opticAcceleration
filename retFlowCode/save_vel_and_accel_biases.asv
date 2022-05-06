@@ -3,10 +3,10 @@
 % Authors:          Oliver Xu and Charlie Burlingham
 %
 % Purpose:          Loads pre-computed flow data, calculates acceleration
-% data
-% Inputs:           foldername: name of directory containing bias data
-%                   fix: fixation depth (mm)
-%                   heading: heading angle (deg)
+%                   data, and finds the first singularity, then a second
+%                   singularity (if it exists)
+%
+% Inputs:           foldername: name of directory containing flow data
 %
 % Last updated:     April 27 2022
 %
@@ -24,6 +24,7 @@
 %
 %                   You should have received a copy of the GNU Affero General Public License
 %                   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+%
 function save_vel_and_accel_biases(foldername)
     cd(foldername);
     D = dir;
@@ -41,17 +42,12 @@ function save_vel_and_accel_biases(foldername)
 
             retGridVelxx(:,:,i) = thisEyeStruct.retGridVelxx;
             retGridVelyy(:,:,i) = thisEyeStruct.retGridVelyy;
-            mask1(:, :, i) = thisEyeStruct.mask1;
-            mask2(:, :, i) = thisEyeStruct.mask2;
-            mask3(:, :, i) = thisEyeStruct.mask3;
             dt = 1/thisEyeStruct.samplingRate;
             heading(1,i) = thisEyeStruct.headX;
             heading(2,i) = thisEyeStruct.headY;
-            transvel(:,i) =  thisEyeStruct.translation/dt;
         end
         retGridxx = thisEyeStruct.retGridxx;
         retGridyy = thisEyeStruct.retGridyy;
-        transaccel = [gradient(transvel(1,:))' gradient(transvel(2,:))' gradient(transvel(3,:))' ]/dt;
         % for i = 1:frame_ct
         %     angle(i) = acosd(transaccel(i,1)/norm(transaccel(i,:)));
         % end
@@ -166,7 +162,8 @@ function save_vel_and_accel_biases(foldername)
             [out, idx] = sort(abs(list_v_x));
             sing_one(frame-2, :) = list_pos(1, idx(1));
             frame_two_idx = 2;
-            while abs(list_pos(1, idx(1))-list_pos(1, idx(frame_two_idx))) < 10 % 10 degree tolerance for singularities
+            %while abs(list_pos(1, idx(1))-list_pos(1, idx(frame_two_idx))) < 10 % 10 degree tolerance for singularities
+            
                 frame_two_idx = frame_two_idx + 1;
             end
             [idx(1), idx(frame_two_idx)]

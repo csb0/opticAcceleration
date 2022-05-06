@@ -34,17 +34,12 @@ function plotFlowAccel(foldername)
 
         retGridVelxx(:,:,i) = thisEyeStruct.retGridVelxx;
         retGridVelyy(:,:,i) = thisEyeStruct.retGridVelyy;
-        mask1(:, :, i) = thisEyeStruct.mask1;
-        mask2(:, :, i) = thisEyeStruct.mask2;
-        mask3(:, :, i) = thisEyeStruct.mask3;
         dt = 1/thisEyeStruct.samplingRate;
         heading(1,i) = thisEyeStruct.headX;
         heading(2,i) = thisEyeStruct.headY;
-        transvel(:,i) =  thisEyeStruct.translation/dt;
     end
     retGridxx = thisEyeStruct.retGridxx;
     retGridyy = thisEyeStruct.retGridyy;
-    transaccel = [gradient(transvel(1,:))' gradient(transvel(2,:))' gradient(transvel(3,:))' ]/dt;
     % acceleration
     for frame = 3:(frame_ct-2)
         accel_x(:,:,frame) = retGridVelxx(:,:,frame) - retGridVelxx(:,:,frame-1);

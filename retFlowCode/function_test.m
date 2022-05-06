@@ -26,8 +26,8 @@
 %                   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 %
 %% set params
-save_path = '/Users/Charlie/Desktop/fff/ff2';
-save_path2 =  '/Users/Charlie/Desktop/fff/ff3';
+save_path = '/Users/Charlie/Desktop/ff2/';
+save_path2 =  '/Users/Charlie/Desktop/ff3/';
 heading = 30; % degrees
 fix_depth = 6000; % mm
 
@@ -41,7 +41,7 @@ end
 % the paper)
 for h = 0:5:50 % heading varies from 0 to 50 deg in 5 deg intervals
     s_p = [save_path2 num2str(h) '-']; % heading (in degrees) dash fixation depth is the folder name
-    retFlowSimFunction(h, 7.5e3, fix_depth, s_p); % plane is 12.5m away from observer's initial position
+    retFlowSimFunction(h, 7.5e3, 7.5e3, s_p); % plane is 12.5m away from observer's initial position
     clearvars -except save_path save_path2 h heading fix_depth;
 end
 % plot heading bias over ground truth heading (second singularity) [part of
@@ -54,4 +54,4 @@ save_vel_and_accel_biases(save_path2);
 %% display singularity, flow/accel data
 plotFigs(save_path, fix_depth, heading); % plots fig 6
 plotHeadingBias(save_path2); % plots fig 5
-plotFlowAccel([save_path2 '50-7500']); % example flow/accel field, can be adjusted
+plotFlowAccel([save_path2 '/50-7500']); % example flow/accel field, can be adjusted
