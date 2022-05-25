@@ -37,28 +37,19 @@ function plotHeadingBias(foldername)
         accelfile = [folder '/accel_bias.mat'];
         accel = load(accelfile);
         heading = str2num(extractBefore(datafolders(ii).name, '-'));
-        accel.sing_bias(:,2)
-        % Set bias to be for the singularity further away from 0
-        if median(abs((accel.sing_bias(:, 2)+heading))) >= median(abs((accel.sing_bias(:, 1)+heading)))
-            bias = median(accel.sing_bias(:, 2));
+        if abs(median(vel.sing_bias(:, 2)+heading)) >= vel.sing_bias(:, 1)+heading
+            bias = (accel_pt(:, 2));
         else
-            bias = median(accel.sing_bias(:, 1));
+            bias = (accel_pt(:, 3));
         end
-        % Check if the two singularities are the same, if so, remove from
-        % plot
-        if median(accel.sing_bias(:, 2)) == median(accel.sing_bias(:, 1))
-            heading = NaN;
-            bias = NaN;
-        end
-        vel_pt = [vel_pt; [heading, bias]];
-        accel_pt = [accel_pt; [heading, bias]];
+        vel_pt = [vel_pt; [heading, median(vel.sing_bias)]];
+        accel_pt = [accel_pt; [heading, median(accel.sing_bias)]];
     end
     figure;
-    plot(accel_pt(:,1), -accel_pt(:, 2), 'ro'); % invert the y-axis
+    plot(accel_pt(:,1), bias, 'ro');
     xlabel('Ground truth heading ({\circ})');
     ylabel('Bias ({\circ})');
     title(['Acceleration singularity bias over ground truth']);
-    
 %     figure;
 %     plot(vel_pt(:,1), vel_pt(:, 2), 'bo');
 %     xlabel('Ground truth heading ({\circ})');

@@ -26,8 +26,8 @@
 %                   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 %
 %% set params
-save_path = '/Users/Charlie/Desktop/ff2/';
-save_path2 =  '/Users/Charlie/Desktop/ff3/';
+save_path = 'C:\Users\Oli\Documents\charlie_data\kate_data\function_test\';
+save_path2 =  'C:\Users\Oli\Documents\charlie_data\kate_data\function_test2\';
 heading = 30; % degrees
 fix_depth = 6000; % mm
 
@@ -54,4 +54,4 @@ save_vel_and_accel_biases(save_path2);
 %% display singularity, flow/accel data
 plotFigs(save_path, fix_depth, heading); % plots fig 6
 plotHeadingBias(save_path2); % plots fig 5
-plotFlowAccel([save_path2 '/50-7500']); % example flow/accel field, can be adjusted
+plotFlowAccel([save_path2 '/45-7500']); % example flow/accel field, can be adjusted

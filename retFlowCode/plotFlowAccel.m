@@ -53,7 +53,7 @@ function plotFlowAccel(foldername)
     ylim([-60 60]);
     xlabel('Retinal horizontal position ({\circ})');
     ylabel('Retinal vertical position ({\circ})');
-    title(['Flow field at frame ' num2str(middle_frame)]);
+    title(['Flow field at frame ' num2str(middle_frame) ', heading ' num2str(heading(1)) '{\circ}']);
 
     % plot accel and singularity/heading
     figure;
@@ -65,6 +65,6 @@ function plotFlowAccel(foldername)
     ylim([-60 60]);
     xlabel('Retinal horizontal position ({\circ})');
     ylabel('Retinal vertical position ({\circ})');
-    title(['Acceleration field at frame ' num2str(middle_frame)]);
+    title(['Acceleration field at frame ' num2str(middle_frame) ', heading ' num2str(heading(1)) '{\circ}']);
 
 
